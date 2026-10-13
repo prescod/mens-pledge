@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin: review names · The Intervention Pledge</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body data-page="admin" class="admin">
+
+<header class="admin-header">
+<div class="container">
+<p class="admin-brand display">The Intervention Pledge <span class="badge">Admin</span></p>
+<div class="admin-user">
+<span>Signed in as [ADMIN]</span>
+<button id="sign-out" type="button" class="link-btn">Sign out</button>
+</div>
+</div>
+</header>
+
+<main class="container admin-main">
+<div class="admin-top">
+<div>
+<h1 class="display">Names to review</h1>
+<p>Approved names appear on the public wall. Every signature is already in the count either way.</p>
+</div>
+<p class="waiting" aria-live="polite"><span id="pending-count">0</span> waiting</p>
+</div>
+
+<div class="table-wrap">
+<table class="table">
+<thead>
+<tr>
+<th scope="col">Entered as</th>
+<th scope="col">Will show as</th>
+<th scope="col">City</th>
+<th scope="col">Email</th>
+<th scope="col">Signed</th>
+<th scope="col">Decision</th>
+</tr>
+</thead>
+<tbody id="review-rows"></tbody>
+</table>
+</div>
+<p class="admin-note">Rejected names are hidden from the wall but stay in the count. Removal requests from signers are handled separately.</p>
+</main>
+
+<script src="../assets/site.js"></script>
+</body>
+</html>

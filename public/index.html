@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Take the pledge · The Intervention Pledge</title>
+<meta name="description" content="If a woman is being sexually assaulted with my knowledge or in my presence, I will object and intervene, escalating to calling 911 if necessary.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="home">
+
+<header class="site-header">
+<div class="container">
+<a class="brand" href="./">The Intervention Pledge</a>
+<nav class="site-nav" aria-label="Main">
+<ul class="link-list">
+<li><a href="./" aria-current="page">Pledge</a></li>
+<li><a href="intervene/">How to intervene</a></li>
+<li><a href="privacy/">Privacy</a></li>
+</ul>
+</nav>
+</div>
+</header>
+
+<main>
+<section class="container hero" aria-labelledby="pledge-h">
+
+<div class="hero-text">
+<p class="eyebrow">A public commitment by men</p>
+<h1 id="pledge-h" class="display">I won't look away.</h1>
+<p class="pledge-text">If a woman is being sexually assaulted with my knowledge or in my presence, I will object and intervene, escalating to calling 911 if necessary.</p>
+
+<div class="counter" aria-live="polite">
+<p class="counter-number" id="count">&nbsp;</p>
+<p class="counter-label">men have taken the pledge</p>
+</div>
+</div>
+
+<div class="sign-card">
+<h2 id="sign-h" class="display">Add your name</h2>
+<p>This pledge is for men. It takes less than a minute.</p>
+
+<form id="sign-form" class="sign-form" aria-labelledby="sign-h">
+<div class="field">
+<label for="f-name">Name</label>
+<input id="f-name" class="input" type="text" name="name" autocomplete="name" required maxlength="100">
+</div>
+<div class="field">
+<label for="f-email">Email</label>
+<p id="f-email-hint" class="hint">Never shown. Used only so each person signs once.</p>
+<input id="f-email" class="input" type="email" name="email" autocomplete="email" aria-describedby="f-email-hint" required maxlength="254">
+</div>
+<div class="field">
+<label for="f-city">City <span class="optional">(optional)</span></label>
+<input id="f-city" class="input" type="text" name="city" autocomplete="address-level2" maxlength="80">
+</div>
+
+<label class="checkbox">
+<input id="f-updates" type="checkbox" name="wantsUpdates">
+<span><strong>Email me reminders and progress updates.</strong> Unsubscribe anytime.</span>
+</label>
+
+<div class="preview">
+<p class="preview-label">On the wall you'll appear as</p>
+<p class="preview-name"><span id="preview-name">First name + last initial</span> <span id="preview-city" class="city"></span></p>
+</div>
+
+<p id="sign-error" class="form-error" role="alert" tabindex="-1"></p>
+
+<button id="sign-submit" class="btn btn-primary" type="submit">Sign the pledge</button>
+<div id="signed" class="signed" role="status" hidden>
+<p>You're signed. Thank you.</p>
+<a class="btn btn-primary" href="thanks/">Continue</a>
+</div>
+
+<p class="small-print">You can remove your signature at any time. <a href="privacy/">How we handle your information</a></p>
+</form>
+</div>
+</section>
+
+<section class="wall" aria-labelledby="wall-h">
+<div class="container">
+<div class="wall-head">
+<h2 id="wall-h" class="display">Men who have signed</h2>
+<p>First name and last initial only. Names appear after a quick review.</p>
+</div>
+
+<!-- Placeholder photos: swap the files in images/ and update alt text and captions. -->
+<div class="photos">
+<figure>
+<img src="images/stock-1.jpg" width="800" height="1000" alt="A young man in a striped shirt, finger resting on his lips, looking at the camera">
+<figcaption><strong>Stock P.</strong> <span>Stock photo</span></figcaption>
+</figure>
+<figure>
+<img src="images/stock-2.jpg" width="800" height="1000" alt="A smiling older man in a white shirt, a friend beside him">
+<figcaption><strong>Replace Me.</strong> <span>Stock photo</span></figcaption>
+</figure>
+<figure>
+<img src="images/stock-3.jpg" width="800" height="1000" alt="A bearded man in glasses resting his chin on his hand" loading="lazy">
+<figcaption><strong>Sample D.</strong> <span>Stock photo</span></figcaption>
+</figure>
+<figure>
+<img src="images/stock-4.jpg" width="800" height="1000" alt="A young man sitting on a sofa, head resting on his hand" loading="lazy">
+<figcaption><strong>Swap M.</strong> <span>Stock photo</span></figcaption>
+</figure>
+</div>
+
+<ul id="names" class="names"></ul>
+<div class="more" hidden>
+<button id="show-more" class="btn" type="button">Show more names</button>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<p>Run by [ORGANIZATION NAME]</p>
+<ul class="link-list">
+<li><a href="intervene/">How to intervene</a></li>
+<li><a href="privacy/">Privacy</a></li>
+<li><a href="privacy/#remove">Remove my signature</a></li>
+</ul>
+</div>
+</footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

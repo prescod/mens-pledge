@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · The Intervention Pledge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body data-page="privacy">
+
+<header class="site-header">
+<div class="container">
+<a class="brand" href="../">The Intervention Pledge</a>
+<nav class="site-nav" aria-label="Main">
+<ul class="link-list">
+<li><a href="../">Pledge</a></li>
+<li><a href="../intervene/">How to intervene</a></li>
+<li><a href="./" aria-current="page">Privacy</a></li>
+</ul>
+</nav>
+</div>
+</header>
+
+<main class="container page privacy">
+<div class="intro">
+<p class="eyebrow">Privacy</p>
+<h1 class="display">Your name, your choice</h1>
+<p class="lede">We ask for as little as we can. Here is exactly what we collect, what is shown, and how to take your name back.</p>
+<p class="meta">Run by [ORGANIZATION NAME] · Last updated [DATE]</p>
+</div>
+
+<section class="privacy-collect" aria-labelledby="collect-h">
+<h2 id="collect-h" class="display h-section">What we collect</h2>
+<div class="table-wrap">
+<table class="table">
+<thead>
+<tr>
+<th scope="col" style="width: 22%">What</th>
+<th scope="col" style="width: 18%">Required</th>
+<th scope="col">Shown publicly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Name</th>
+<td>Yes</td>
+<td>First name and last initial only, after review.</td>
+</tr>
+<tr>
+<th scope="row">Email</th>
+<td>Yes</td>
+<td><strong>Never.</strong> Used to make sure each person signs once, and to send updates only if you ask for them.</td>
+</tr>
+<tr>
+<th scope="row">City</th>
+<td>No</td>
+<td>Yes, beside your name.</td>
+</tr>
+<tr>
+<th scope="row">Your choices</th>
+<td>No</td>
+<td>Whether you want email updates. Never shown.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<div class="privacy-grid">
+<section aria-labelledby="review-h">
+<h2 id="review-h" class="display">Why names are reviewed</h2>
+<p>Every signature is counted straight away. Before a name appears on the wall, a person checks it, so the wall stays free of fake, offensive or impersonating entries.</p>
+</section>
+<section aria-labelledby="email-h">
+<h2 id="email-h" class="display">Emails from us</h2>
+<p>You only hear from us if you ticked "Email me reminders and progress updates". Every email has an unsubscribe link, and unsubscribing does not remove your signature.</p>
+</section>
+<section aria-labelledby="keep-h">
+<h2 id="keep-h" class="display">Where it is kept</h2>
+<p>[WHERE THE DATA IS STORED AND WHO CAN ACCESS IT]. [HOW LONG IT IS KEPT].</p>
+</section>
+<section aria-labelledby="contact-h">
+<h2 id="contact-h" class="display">Questions</h2>
+<p>Write to us at <a href="#">[CONTACT EMAIL]</a>.</p>
+</section>
+</div>
+
+<section id="remove" class="remove" aria-labelledby="remove-h">
+<div>
+<h2 id="remove-h" class="display h-section">Remove your signature</h2>
+<p>You can take your name off at any time. Enter the email you signed with and we'll send you a link to confirm. Your name leaves the wall and you are removed from the count.</p>
+</div>
+<form id="remove-form" aria-labelledby="remove-h">
+<label for="r-email" class="label">Email you signed with</label>
+<div class="row">
+<input id="r-email" class="input" type="email" name="email" autocomplete="email" required maxlength="254">
+<button type="submit" class="btn btn-dark">Send removal link</button>
+</div>
+<p id="remove-status" class="status" role="status"></p>
+</form>
+</section>
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<p>Run by [ORGANIZATION NAME]</p>
+<ul class="link-list">
+<li><a href="../">Pledge</a></li>
+<li><a href="../intervene/">How to intervene</a></li>
+</ul>
+</div>
+</footer>
+
+<script src="../assets/site.js"></script>
+</body>
+</html>

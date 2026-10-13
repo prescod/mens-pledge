@@ -1,0 +1,8 @@
+# Design brief, specs and source designs: kept locally, not committed
+docs/
+
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.DS_Store
