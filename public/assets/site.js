@@ -14,8 +14,8 @@
   var DEMO = {
     count: 2417,
     wall: [
-      ['Marcus R.', 'Vancouver'], ['Daniel O.', 'Toronto'], ['Raj S.', 'Seattle'], ['Tom W.', ''],
-      ['Ahmed K.', 'Calgary'], ['Luis M.', 'Portland'], ['Connor B.', 'Halifax'], ['Kenji T.', 'Victoria'],
+      ['Marcus R.', 'Vancouver'], ['Daniel Okafor', 'Toronto'], ['Raj S.', 'Seattle'], ['Tom W.', ''],
+      ['Ahmed K.', 'Calgary'], ['Luis Moreno', 'Portland'], ['Connor B.', 'Halifax'], ['Kenji T.', 'Victoria'],
       ['Graham A.', 'Ottawa'], ['Omar H.', 'Montréal'], ['Chris D.', ''], ['Sam L.', 'Winnipeg'],
       ['Noah F.', 'Burnaby'], ['Diego C.', 'Denver'], ['Andre J.', 'Chicago'], ['Viktor V.', 'Edmonton'],
       ['Jordan P.', ''], ['Farid Z.', 'Surrey'], ['Ben G.', 'Kelowna'], ['Miguel N.', 'San Diego'],
@@ -23,7 +23,7 @@
     ].map(function (r) { return { name: r[0], city: r[1] }; }),
     pending: [
       { id: 1, entered: 'Marcus Robinson', shown: 'Marcus R.', city: 'Vancouver', email: 'm•••@gmail.com', when: '4 min ago' },
-      { id: 2, entered: 'Daniel Okafor', shown: 'Daniel O.', city: 'Toronto', email: 'd•••@outlook.com', when: '11 min ago' },
+      { id: 2, entered: 'Daniel Okafor', shown: 'Daniel Okafor', city: 'Toronto', email: 'd•••@outlook.com', when: '11 min ago' },
       { id: 3, entered: 'asdf asdf', shown: 'asdf a.', city: '', email: 'a•••@mail.com', when: '18 min ago' },
       { id: 4, entered: 'Raj Sharma', shown: 'Raj S.', city: 'Seattle', email: 'r•••@proton.me', when: '26 min ago' },
       { id: 5, entered: 'The Whole Internet', shown: 'The I.', city: 'Everywhere', email: 't•••@gmail.com', when: '40 min ago' },
@@ -72,11 +72,12 @@
     });
   }
 
-  // Same rule as the server: first word + initial of last word + "."
-  function displayName(name) {
+  // Same rule as the server: the full name if the signer opted in, otherwise
+  // first word + initial of last word + "."
+  function displayName(name, full) {
     var parts = (name || '').trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return '';
-    if (parts.length === 1) return parts[0];
+    if (full || parts.length === 1) return parts.join(' ');
     return parts[0] + ' ' + parts[parts.length - 1].charAt(0).toUpperCase() + '.';
   }
 
@@ -96,6 +97,7 @@
     var form = $('#sign-form');
     var nameEl = $('#f-name');
     var cityEl = $('#f-city');
+    var fullNameEl = $('#f-full-name');
     var previewName = $('#preview-name');
     var previewCity = $('#preview-city');
     var errorEl = $('#sign-error');
@@ -107,12 +109,14 @@
     getCount().then(setCount, function () { /* keep server-rendered value */ });
 
     function updatePreview() {
-      previewName.textContent = displayName(nameEl.value) || 'First name + last initial';
+      previewName.textContent = displayName(nameEl.value, fullNameEl.checked) ||
+        (fullNameEl.checked ? 'Full name' : 'First name + last initial');
       var city = cityEl.value.trim();
       previewCity.textContent = city ? '· ' + city : '';
     }
     nameEl.addEventListener('input', updatePreview);
     cityEl.addEventListener('input', updatePreview);
+    fullNameEl.addEventListener('change', updatePreview);
     updatePreview();
 
     function showSigned(count) {
@@ -130,7 +134,8 @@
         name: nameEl.value.trim(),
         email: $('#f-email').value.trim(),
         city: cityEl.value.trim(),
-        wantsUpdates: $('#f-updates').checked
+        wantsUpdates: $('#f-updates').checked,
+        showFullName: fullNameEl.checked
       };
       if (!data.name) { nameEl.focus(); return; }
       submit.disabled = true;
