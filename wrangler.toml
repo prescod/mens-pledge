@@ -12,8 +12,7 @@ run_worker_first = ["/", "/api/*", "/admin", "/admin/*", "/followup"]
 [[d1_databases]]
 binding = "DB"
 database_name = "pledge"
-# Replace with the id printed by `npx wrangler d1 create pledge`. Local dev ignores it.
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "6b30867e-bbf2-4e77-90e8-4a143ab1bbd1"
 migrations_dir = "migrations"
 
 # Per-IP limits on the POST endpoints, keyed by a hash of the IP.
