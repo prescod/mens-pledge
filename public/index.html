@@ -40,6 +40,7 @@
 <section class="container hero" aria-labelledby="pledge-h">
 
 <div class="hero-text">
+<p id="sent-by" class="sent-by" hidden></p>
 <p class="eyebrow">A public commitment by men</p>
 <h1 id="pledge-h" class="display">I won't look away.</h1>
 <p class="pledge-text">If a woman is being sexually assaulted with my knowledge or in my presence, I will object and intervene, escalating to calling 911 if necessary.</p>
@@ -87,6 +88,9 @@
 <p class="preview-label">On the wall you'll appear as</p>
 <p class="preview-name"><span id="preview-name">First name + last initial</span> <span id="preview-city" class="city"></span></p>
 </div>
+
+<!-- Turnstile test site key: replace with the real one from the Cloudflare dashboard. -->
+<div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-appearance="interaction-only" data-size="flexible"></div>
 
 <p id="sign-error" class="form-error" role="alert" tabindex="-1"></p>
 
@@ -147,6 +151,7 @@
 </div>
 </footer>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="assets/site.js"></script>
 </body>
 </html>

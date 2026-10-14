@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `npx wrangler dev`. .dev.vars is gitignored.
+# This is Cloudflare's documented test secret: every token passes.
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+ADMIN_PASSWORD=change-me

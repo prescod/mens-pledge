@@ -114,6 +114,8 @@
 <input id="r-email" class="input" type="email" name="email" autocomplete="email" required maxlength="254">
 <button type="submit" class="btn btn-dark">Send removal link</button>
 </div>
+<!-- Turnstile test site key: replace with the real one from the Cloudflare dashboard. -->
+<div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-appearance="interaction-only" data-size="flexible"></div>
 <p id="remove-status" class="status" role="status"></p>
 </form>
 </section>
@@ -129,6 +131,7 @@
 </div>
 </footer>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="../assets/site.js"></script>
 </body>
 </html>

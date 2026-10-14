@@ -81,14 +81,38 @@
     return parts[0] + ' ' + parts[parts.length - 1].charAt(0).toUpperCase() + '.';
   }
 
+  // Resolves to { count, paused }. `paused` means D1 is over its daily limit and
+  // the count is the last cached one.
   function getCount() {
-    return api('count').then(function (b) { return b.count; }, function (err) {
-      if (err && err.demo) return DEMO.count + (recall('signedCount') ? 1 : 0);
+    return api('count').then(function (b) { return b; }, function (err) {
+      if (err && err.demo) return { count: DEMO.count + (recall('signedCount') ? 1 : 0) };
       throw err;
     });
   }
 
+  var PAUSED = 'Signing is paused, please try again later.';
+
+  // The token from a form's Turnstile widget, and a reset after each attempt
+  // (a token can only be used once).
+  function turnstileToken(form) {
+    var input = form.querySelector('[name="cf-turnstile-response"]');
+    return input ? input.value : '';
+  }
+
+  function resetTurnstile(form) {
+    var widget = form.querySelector('.cf-turnstile');
+    try { if (widget && window.turnstile) window.turnstile.reset(widget); } catch (e) { /* ignore */ }
+  }
+
+  var REF_RE = /^[abcdefghjkmnpqrstuvwxyz23456789]{8}$/;
+
   function siteURL() { return ROOT.href; }
+
+  // The signer's personal link, so the people he sends it to see his name.
+  function personalURL() {
+    var code = recall('refCode');
+    return code ? ROOT.href + '?from=' + code : ROOT.href;
+  }
 
   // The goal shown under the counter: the next milestone above the count.
   var GOALS = [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000];
@@ -125,7 +149,28 @@
       goalEl.hidden = false;
     }
 
-    getCount().then(setCount, function () { /* keep server-rendered value */ });
+    // The Worker renders the count into the page; fetch it only when it didn't
+    // (the static preview).
+    if (countEl.getAttribute('data-count')) {
+      setCount(Number(countEl.getAttribute('data-count')));
+    } else {
+      getCount().then(function (b) {
+        if (b.count !== null && b.count !== undefined) setCount(b.count);
+        if (b.paused) errorEl.textContent = PAUSED;
+      }, function () {});
+    }
+
+    // Personal links: remember who sent this visitor, so it is recorded if he signs.
+    var from = new URLSearchParams(window.location.search).get('from');
+    if (from && REF_RE.test(from)) {
+      remember('ref', from);
+      var sentBy = $('#sent-by');
+      // Without the Worker (the static preview) the sender can't be looked up.
+      if (sentBy.hidden && !document.body.hasAttribute('data-rendered')) {
+        sentBy.textContent = 'A man you know sent you this.';
+        sentBy.hidden = false;
+      }
+    }
 
     function updatePreview() {
       previewName.textContent = displayName(nameEl.value, fullNameEl.checked) ||
@@ -138,9 +183,10 @@
     fullNameEl.addEventListener('change', updatePreview);
     updatePreview();
 
-    function showSigned(count) {
+    function showSigned(count, refCode) {
       setCount(count);
       remember('signedCount', count);
+      if (refCode) remember('refCode', refCode);
       remember('signedName', displayName(nameEl.value, fullNameEl.checked));
       submit.hidden = true;
       signedBox.hidden = false;
@@ -155,13 +201,16 @@
         email: $('#f-email').value.trim(),
         city: cityEl.value.trim(),
         wantsUpdates: $('#f-updates').checked,
-        showFullName: fullNameEl.checked
+        showFullName: fullNameEl.checked,
+        ref: recall('ref'),
+        turnstileToken: turnstileToken(form)
       };
       if (!data.name) { nameEl.focus(); return; }
       submit.disabled = true;
       postJSON('sign', data).then(function (body) {
-        showSigned(body.count);
+        showSigned(body.count, body.refCode);
       }, function (err) {
+        resetTurnstile(form);
         if (err && err.demo) {
           showSigned(DEMO.count + 1);
           return;
@@ -218,9 +267,9 @@
     var countEl = $('#count');
     var known = recall('signedCount');
     if (known) countEl.textContent = formatCount(known);
-    else getCount().then(function (n) { countEl.textContent = formatCount(n); }, function () {});
+    else getCount().then(function (b) { if (b.count != null) countEl.textContent = formatCount(b.count); }, function () {});
 
-    var url = siteURL();
+    var url = personalURL();
     var message = SHARE_TEXT + ' ' + url;
     var input = $('#share-url');
     input.value = url;
@@ -254,7 +303,7 @@
     }
 
     var name = recall('signedName');
-    if (name) makeCard(name, url);
+    if (name) makeCard(name, siteURL());
   }
 
   // A 1080×1350 image for stories and feeds, drawn in the browser.
@@ -348,7 +397,7 @@
         var shareBtn = $('#card-share-btn');
         if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
           shareBtn.addEventListener('click', function () {
-            navigator.share({ files: [file], text: SHARE_TEXT + ' ' + url }).catch(function () {});
+            navigator.share({ files: [file], text: SHARE_TEXT + ' ' + personalURL() }).catch(function () {});
           });
         } else {
           shareBtn.hidden = true;
@@ -369,11 +418,18 @@
       e.preventDefault();
       btn.disabled = true;
       status.textContent = '';
-      postJSON('remove-request', { email: $('#r-email').value.trim() }).then(function () {
+      postJSON('remove-request', {
+        email: $('#r-email').value.trim(),
+        turnstileToken: turnstileToken(form)
+      }).then(function () {
         status.textContent = SAME;
       }, function (err) {
-        status.textContent = err && err.demo ? SAME : 'Something went wrong. Please try again.';
-      }).then(function () { btn.disabled = false; });
+        status.textContent = err && err.demo ? SAME
+          : (err && err.body && err.body.error) || 'Something went wrong. Please try again.';
+      }).then(function () {
+        btn.disabled = false;
+        resetTurnstile(form);
+      });
     });
   }
 

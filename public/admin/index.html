@@ -47,6 +47,18 @@
 </table>
 </div>
 <p class="admin-note">Rejected names are hidden from the wall but stay in the count. Removal requests from signers are handled separately.</p>
+
+<section class="admin-export" aria-labelledby="export-h">
+<h2 id="export-h" class="display h-section">Mailing list export</h2>
+<p>Signers who ticked "Email me reminders and progress updates", as a CSV to import into Kit. Import the <code>ref_code</code> and <code>followup_token</code> columns as custom fields.</p>
+<div class="share-row">
+<form method="post" action="../api/admin/export.csv">
+<button type="submit" class="btn btn-primary">Download new subscribers</button>
+</form>
+<a class="btn" href="../api/admin/export.csv?all=1">Download everyone who opted in</a>
+</div>
+<p class="admin-note">"New subscribers" are marked as exported, so each download only has people added since the last one.</p>
+</section>
 </main>
 
 <script src="../assets/site.js"></script>

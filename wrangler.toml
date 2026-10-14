@@ -1,0 +1,38 @@
+name = "intervention-pledge"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+# Only these paths run the Worker. Everything else (CSS, JS, images, the other
+# pages) is served straight from static assets and costs no Worker request.
+run_worker_first = ["/", "/api/*", "/admin", "/admin/*", "/followup"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pledge"
+# Replace with the id printed by `npx wrangler d1 create pledge`. Local dev ignores it.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+# Per-IP limits on the POST endpoints, keyed by a hash of the IP.
+# (Wrangler 4.20 declares the rate-limit binding through unsafe.bindings.)
+[[unsafe.bindings]]
+name = "SIGN_LIMIT"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 5, period = 60 }
+
+[[unsafe.bindings]]
+name = "REMOVE_LIMIT"
+type = "ratelimit"
+namespace_id = "1002"
+simple = { limit = 5, period = 60 }
+
+# Secrets (set with `npx wrangler secret put NAME`, or in .dev.vars locally):
+#   TURNSTILE_SECRET    Turnstile secret key
+#   ADMIN_PASSWORD      basic-auth fallback for /admin when Access is not set up
+# Cloudflare Access for /admin (optional, takes precedence over ADMIN_PASSWORD):
+#   ACCESS_TEAM_DOMAIN  e.g. yourteam.cloudflareaccess.com
+#   ACCESS_AUD          the Access application's audience tag
