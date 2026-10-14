@@ -279,6 +279,12 @@ img { max-width: 100%; }
 
 .counter-label { margin: 16px 0 0; font-size: 19px; font-weight: 600; }
 
+.goal { margin-top: 20px; max-width: 420px; }
+.goal p { margin: 0; font-size: 16px; color: var(--muted); }
+.goal strong { color: var(--ink); }
+.goal-bar { margin-top: 10px; height: 8px; border-radius: 4px; background: var(--rule); overflow: hidden; }
+.goal-bar span { display: block; height: 100%; width: 0; background: var(--accent); }
+
 .sign-card {
   flex: 1 1 360px;
   min-width: 0;
@@ -607,6 +613,16 @@ img { max-width: 100%; }
 .share-row + .share-row { margin-top: 12px; }
 .share-row .input { flex: 1 1 260px; min-width: 0; height: 52px; font-size: 16px; }
 .share-row .btn-primary { flex: 0 0 auto; min-height: 52px; }
+
+.card-img {
+  display: block;
+  margin-top: 24px;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
 
 .next-card {
   margin-top: clamp(48px, 6vw, 72px);

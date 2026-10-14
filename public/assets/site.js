@@ -90,6 +90,16 @@
 
   function siteURL() { return ROOT.href; }
 
+  // The goal shown under the counter: the next milestone above the count.
+  var GOALS = [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000];
+
+  function nextGoal(n) {
+    for (var i = 0; i < GOALS.length; i++) if (GOALS[i] > n) return GOALS[i];
+    return Math.pow(10, String(Math.floor(n)).length);
+  }
+
+  var SHARE_TEXT = "I signed this. If I'm ever there when something's wrong, I'll step in. Will you?";
+
   // ---------- home ----------
 
   function initHome() {
@@ -104,7 +114,16 @@
     var submit = $('#sign-submit');
     var signedBox = $('#signed');
 
-    function setCount(n) { countEl.textContent = formatCount(n); }
+    var goalEl = $('#goal');
+
+    function setCount(n) {
+      countEl.textContent = formatCount(n);
+      var goal = nextGoal(n);
+      $('#goal-number').textContent = formatCount(goal);
+      $('#goal-left').textContent = formatCount(goal - n) + ' to go.';
+      $('#goal-fill').style.width = (100 * n / goal) + '%';
+      goalEl.hidden = false;
+    }
 
     getCount().then(setCount, function () { /* keep server-rendered value */ });
 
@@ -122,6 +141,7 @@
     function showSigned(count) {
       setCount(count);
       remember('signedCount', count);
+      remember('signedName', displayName(nameEl.value, fullNameEl.checked));
       submit.hidden = true;
       signedBox.hidden = false;
       $('a', signedBox).focus();
@@ -201,7 +221,7 @@
     else getCount().then(function (n) { countEl.textContent = formatCount(n); }, function () {});
 
     var url = siteURL();
-    var message = 'I took the Intervention Pledge. Will you? ' + url;
+    var message = SHARE_TEXT + ' ' + url;
     var input = $('#share-url');
     input.value = url;
 
@@ -227,11 +247,115 @@
     var moreBtn = $('#share-more');
     if (navigator.share) {
       moreBtn.addEventListener('click', function () {
-        navigator.share({ title: 'The Intervention Pledge', text: message, url: url }).catch(function () {});
+        navigator.share({ title: 'The Intervention Pledge', text: SHARE_TEXT, url: url }).catch(function () {});
       });
     } else {
       moreBtn.hidden = true;
     }
+
+    var name = recall('signedName');
+    if (name) makeCard(name, url);
+  }
+
+  // A 1080×1350 image for stories and feeds, drawn in the browser.
+  function makeCard(name, url) {
+    var section = $('#card-share');
+    var canvas = document.createElement('canvas');
+    if (!canvas.getContext || !canvas.toBlob) return;
+    var W = 1080, H = 1350, X = 96, MAX = W - 2 * X;
+    canvas.width = W;
+    canvas.height = H;
+    var ctx = canvas.getContext('2d');
+    var DISPLAY = 'Archivo, "Helvetica Neue", Arial, sans-serif';
+    var BODY = '"Public Sans", "Helvetica Neue", Arial, sans-serif';
+
+    function font(weight, size, family) {
+      ctx.font = weight + ' ' + size + 'px ' + family;
+      if ('fontStretch' in ctx) ctx.fontStretch = family === DISPLAY ? 'semi-expanded' : 'normal';
+    }
+
+    function wrap(text, maxWidth) {
+      var lines = [], line = '';
+      text.split(' ').forEach(function (word) {
+        var trial = line ? line + ' ' + word : word;
+        if (line && ctx.measureText(trial).width > maxWidth) { lines.push(line); line = word; }
+        else line = trial;
+      });
+      lines.push(line);
+      return lines;
+    }
+
+    var fonts = document.fonts ? Promise.all([
+      document.fonts.load('800 100px Archivo'),
+      document.fonts.load('500 44px "Public Sans"'),
+      document.fonts.load('700 30px "Public Sans"')
+    ]).catch(function () {}) : Promise.resolve();
+
+    fonts.then(function () {
+      ctx.fillStyle = '#F6F6F3';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#2141C4';
+      ctx.fillRect(0, 0, W, 16);
+      ctx.textBaseline = 'alphabetic';
+
+      ctx.fillStyle = '#4A4F57';
+      font(700, 30, BODY);
+      ctx.fillText('THE INTERVENTION PLEDGE', X, 150);
+
+      // Name, shrunk to fit on one line.
+      var size = 128;
+      ctx.fillStyle = '#121417';
+      font(800, size, DISPLAY);
+      while (ctx.measureText(name).width > MAX && size > 48) font(800, size -= 4, DISPLAY);
+      var y = 150 + 40 + size;
+      ctx.fillText(name, X, y);
+
+      ctx.fillStyle = '#2141C4';
+      font(800, 64, DISPLAY);
+      y += 96;
+      ctx.fillText('took the pledge.', X, y);
+
+      // Pledge text, centred in the space between the heading and the footer rule.
+      ctx.fillStyle = '#121417';
+      font(500, 50, BODY);
+      var lines = wrap('“If a woman is being sexually assaulted with my knowledge or in my presence, ' +
+        'I will object and intervene, escalating to calling 911 if necessary.”', MAX);
+      var LINE = 74;
+      y += ((H - 230) - y - lines.length * LINE) / 2 + 50;
+      lines.forEach(function (line) {
+        ctx.fillText(line, X, y);
+        y += LINE;
+      });
+
+      ctx.fillStyle = '#D9DAD6';
+      ctx.fillRect(X, H - 230, MAX, 2);
+      ctx.fillStyle = '#121417';
+      font(800, 64, DISPLAY);
+      ctx.fillText('Will you?', X, H - 140);
+      ctx.fillStyle = '#2141C4';
+      font(700, 34, BODY);
+      ctx.fillText(url.replace(/^https?:\/\//, '').replace(/\/$/, ''), X, H - 84);
+
+      canvas.toBlob(function (blob) {
+        if (!blob) return;
+        var href = URL.createObjectURL(blob);
+        var img = $('#card-img');
+        img.src = href;
+        img.alt = name + ' took the pledge. The pledge text, and: Will you? ' + url;
+        $('#card-download').href = href;
+
+        var file = window.File ? new File([blob], 'intervention-pledge.png', { type: 'image/png' }) : null;
+        var shareBtn = $('#card-share-btn');
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          shareBtn.addEventListener('click', function () {
+            navigator.share({ files: [file], text: SHARE_TEXT + ' ' + url }).catch(function () {});
+          });
+        } else {
+          shareBtn.hidden = true;
+        }
+        section.hidden = false;
+      }, 'image/png');
+    });
   }
 
   // ---------- privacy ----------
